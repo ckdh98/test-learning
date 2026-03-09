@@ -14,16 +14,34 @@ java {
 	}
 }
 
+def java21Launcher = javaToolchains.launcherFor {
+	languageVersion = JavaLanguageVersion.of(21)
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.0'
+	implementation 'org.springframework.security:spring-security-crypto'
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+tasks.withType(JavaCompile).configureEach {
+	options.release = 21
+}
+
+tasks.named('bootRun') {
+	javaLauncher = java21Launcher
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+	javaLauncher = java21Launcher
 }
